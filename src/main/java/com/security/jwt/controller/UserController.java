@@ -5,6 +5,7 @@ import com.security.jwt.entity.UserInfo;
 import com.security.jwt.service.JwtService;
 import com.security.jwt.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,8 +38,12 @@ public class UserController {
         return userInfoService.addUser(userInfo);
 
     }
+
+
+
+
     @PostMapping("/login")
-    public String addUser(@RequestBody AuthRequest authRequest){
+    public String login(@RequestBody AuthRequest authRequest){
 
         Authentication authentication= authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUserName(),authRequest.getPassword()));

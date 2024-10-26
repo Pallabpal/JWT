@@ -4,24 +4,31 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Component
 public class JwtService {
 
+    @Autowired
+    UserInfoService userInfoService;
+
    private static final String secrets ="fshbhQSJHJOOOOOOOx9010iojkwdkkkfjnjdcnbbnbjjoko";
 
     public String generateToken(String username){
         Map<String, Object> claims = new HashMap<>();
+        UserDetails userDetails = userInfoService.loadUserByUsername(username);
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        claims.put("roles",roles);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
